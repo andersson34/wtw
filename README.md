@@ -1,21 +1,21 @@
 # wtw
 
-Microservicio en esta desarrollado en ASP.NET Core (.NET 8) para gestión de facturas en SQL Server con Stored Procedures.
+Microservicio en ASP.NET Core (.NET 8) para gestión de facturas en SQL Server con Stored Procedures.
 
 ## Alcance de la prueba
 
 Este repositorio cubre:
 
-- **Parte 1**: Diseño, implementación y documentación de una **API REST** para registrar y buscar facturas en **SQL Server**.
-- **Parte 2**: Optimización de prompt para resumen en `PROMPTS.md`.
-- **Parte 3**: La estrategia de **pruebas volumétricas** en `VOLUMETRIC_TESTING.md`.
+- **Parte 1**: diseño, implementación y documentación de una **API REST** para registrar y buscar facturas en **SQL Server**.
+- **Parte 2**: optimización de prompt para resumen en `PROMPTS.md`.
+- **Parte 3**: estrategia de **pruebas volumétricas** en `VOLUMETRIC_TESTING.md`.
 
 ## Requisitos
 
 - .NET SDK **8.x**
 - Docker (para SQL Server)
 
-## Para desplegar SQL Server se uso Docker
+## Levantar SQL Server (Docker)
 
 En la raíz del proyecto:
 
@@ -23,14 +23,14 @@ En la raíz del proyecto:
 docker compose up -d
 ```
 
-Esto crea/despliegua:
+Esto crea/levanta:
 
 - `sqlserver` (SQL Server 2022)
 - `sql-init` (contenedor que ejecuta scripts de inicialización)
 
 ### Base de datos y scripts
 
-Los scripts se ejecutan automáticamente en Docker:
+Los scripts se ejecutan automáticamente al levantar Docker:
 
 - `db/init/001_schema.sql`
   - Crea la base `InvoiceDb`
@@ -49,7 +49,7 @@ dotnet run --project InvoiceService.Api
 
 ### URL local
 
-La API expone por defecto en el puerto 5109 y 7192 para despliegues locales (ver `InvoiceService.Api/Properties/launchSettings.json`):
+La API expone por defecto (ver `InvoiceService.Api/Properties/launchSettings.json`):
 
 - `http://localhost:5109`
 - `https://localhost:7192`
@@ -80,6 +80,36 @@ En Swagger:
 1. Ejecuta `POST /auth/login` para obtener el token
 2. En Swagger, presiona **Authorize** y pega `Bearer <TOKEN>`
 
+### cURL (importable en Postman) - Login
+
+Obtener token de **Administrador** (usuario `admin`):
+
+```bash
+curl -X POST "http://localhost:5109/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "admin",
+    "password": "admin123"
+  }'
+```
+
+Obtener token de **Usuario** (cualquier username diferente a `admin`):
+
+```bash
+curl -X POST "http://localhost:5109/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "user1",
+    "password": "user123"
+  }'
+```
+
+Opcional: exportar el token a una variable `TOKEN` (pega manualmente el token devuelto):
+
+```bash
+export TOKEN="<PEGAR_TOKEN_AQUI>"
+```
+
 ## Endpoints (Parte 1)
 
 ### 1) Crear factura
@@ -100,6 +130,27 @@ Persistencia:
 - **Sin Entity Framework**
 - Inserción vía Stored Procedure: `dbo.SP_InsertarFactura`
 
+#### cURL (importable en Postman) - POST /invoice
+
+Requiere token con rol `Administrador`.
+
+```bash
+curl -X POST "http://localhost:5109/invoice" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "numeroFactura": "F-2026-0001",
+    "clienteNombre": "Juan Perez",
+    "clienteEmail": "juan.perez@example.com",
+    "fechaEmision": "2026-02-23T10:00:00",
+    "fechaVencimiento": "2026-03-05T10:00:00",
+    "subtotal": 100.00,
+    "impuesto": 19.00,
+    "total": 119.00,
+    "estado": "Pendiente"
+  }'
+```
+
 ### 2) Obtener factura por id
 
 - `GET /invoice/{id}`
@@ -112,6 +163,13 @@ Consulta:
 Si no existe:
 
 - `404 Not Found` con mensaje descriptivo
+
+#### cURL (importable en Postman) - GET /invoice/{id}
+
+```bash
+curl -X GET "http://localhost:5109/invoice/1" \
+  -H "Authorization: Bearer $TOKEN"
+```
 
 ### 3) Buscar facturas por cliente
 
@@ -129,6 +187,13 @@ Optimización:
 Si no hay resultados:
 
 - `200 OK` con lista vacía `[]`
+
+#### cURL (importable en Postman) - GET /invoice/search
+
+```bash
+curl -X GET "http://localhost:5109/invoice/search?client=Juan" \
+  -H "Authorization: Bearer $TOKEN"
+```
 
 ## Formato estándar de respuesta
 
