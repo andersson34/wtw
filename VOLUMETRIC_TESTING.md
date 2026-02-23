@@ -117,3 +117,20 @@ Una entidad financiera consulta facturas asociadas a clientes para validación y
 - **Soluciones**:
   - Mantener PK clustered.
   - Revisar `INCLUDE` del índice para cubrir consultas.
+
+## Fuentes
+
+Las definiciones, métricas y herramientas mencionadas se basan en documentación pública de performance testing y observabilidad en .NET y SQL Server.
+
+- Microsoft. **Performance testing overview** (conceptos y enfoque general de pruebas de rendimiento).
+  - https://learn.microsoft.com/azure/architecture/framework/scalability/performance-testing
+- k6. **Documentation** (generación de carga, métricas como RPS y latencias percentiles).
+  - https://k6.io/docs/
+- Apache JMeter. **User manual** (pruebas de rendimiento, configuración de escenarios y reportes).
+  - https://jmeter.apache.org/usermanual/
+- Microsoft. **dotnet-counters** (métricas en tiempo real para aplicaciones .NET).
+  - https://learn.microsoft.com/dotnet/core/diagnostics/dotnet-counters
+- Microsoft. **dotnet-trace** (recolección de trazas y diagnóstico de performance en .NET).
+  - https://learn.microsoft.com/dotnet/core/diagnostics/dotnet-trace
+- Microsoft. **Dynamic Management Views (DMVs)** en SQL Server (estadísticas de ejecución, índices y esperas).
+  - https://learn.microsoft.com/sql/relational-databases/system-dynamic-management-views/system-dynamic-management-views

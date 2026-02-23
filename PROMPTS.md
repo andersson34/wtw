@@ -63,3 +63,20 @@ Texto:
 - 5–7 viñetas, concisas.
 - Plazos y montos exactos incluidos.
 - Solo condiciones relevantes sin interpretación.
+
+## Fuentes
+
+Las mejoras aplicadas al prompt se basan en prácticas generales de ingeniería de prompts y control de salida (definir el rol/tarea, establecer restricciones explícitas, forzar formato y criterios de inclusión/exclusión para minimizar “deriva” y contenido irrelevante).
+
+Referencias consultables:
+
+- OpenAI. **Prompt engineering** (guía / buenas prácticas).
+  - https://platform.openai.com/docs/guides/prompt-engineering
+- OpenAI. **Best practices for prompt engineering** (colección de recomendaciones prácticas).
+  - https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-openai-api
+- Anthropic. **Prompt engineering** (técnicas para instrucciones claras y control de formato).
+  - https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering
+- Microsoft. **Prompt engineering** (principios para mejorar precisión y reducir respuestas irrelevantes).
+  - https://learn.microsoft.com/azure/ai-services/openai/concepts/prompt-engineering
+
+Nota: El contenido del “prompt optimizado” no proviene de fuentes externas; es una composición propia a partir de las prácticas anteriores aplicada al texto del caso.
