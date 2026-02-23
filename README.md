@@ -1,21 +1,21 @@
 # wtw
 
-Microservicio en ASP.NET Core (.NET 8) para gestión de facturas en SQL Server con Stored Procedures.
+Microservicio en esta desarrollado en ASP.NET Core (.NET 8) para gestión de facturas en SQL Server con Stored Procedures.
 
 ## Alcance de la prueba
 
 Este repositorio cubre:
 
-- **Parte 1**: diseño, implementación y documentación de una **API REST** para registrar y buscar facturas en **SQL Server**.
-- **Parte 2**: optimización de prompt para resumen en `PROMPTS.md`.
-- **Parte 3**: estrategia de **pruebas volumétricas** en `VOLUMETRIC_TESTING.md`.
+- **Parte 1**: Diseño, implementación y documentación de una **API REST** para registrar y buscar facturas en **SQL Server**.
+- **Parte 2**: Optimización de prompt para resumen en `PROMPTS.md`.
+- **Parte 3**: La estrategia de **pruebas volumétricas** en `VOLUMETRIC_TESTING.md`.
 
 ## Requisitos
 
 - .NET SDK **8.x**
 - Docker (para SQL Server)
 
-## Levantar SQL Server (Docker)
+## Para desplegar SQL Server se uso Docker
 
 En la raíz del proyecto:
 
@@ -23,14 +23,14 @@ En la raíz del proyecto:
 docker compose up -d
 ```
 
-Esto crea/levanta:
+Esto crea/despliegua:
 
 - `sqlserver` (SQL Server 2022)
 - `sql-init` (contenedor que ejecuta scripts de inicialización)
 
 ### Base de datos y scripts
 
-Los scripts se ejecutan automáticamente al levantar Docker:
+Los scripts se ejecutan automáticamente en Docker:
 
 - `db/init/001_schema.sql`
   - Crea la base `InvoiceDb`
@@ -49,7 +49,7 @@ dotnet run --project InvoiceService.Api
 
 ### URL local
 
-La API expone por defecto (ver `InvoiceService.Api/Properties/launchSettings.json`):
+La API expone por defecto en el puerto 5109 y 7192 para despliegues locales (ver `InvoiceService.Api/Properties/launchSettings.json`):
 
 - `http://localhost:5109`
 - `https://localhost:7192`
