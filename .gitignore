@@ -1,0 +1,25 @@
+## Build results
+bin/
+obj/
+
+## User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## IDEs
+.vscode/
+.idea/
+
+## OS files
+.DS_Store
+
+## Test results
+TestResults/
+
+## Logs
+*.log
+
+## Docker
+**/.docker/
