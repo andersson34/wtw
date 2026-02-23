@@ -130,6 +130,8 @@ Persistencia:
 - **Sin Entity Framework**
 - Inserción vía Stored Procedure: `dbo.SP_InsertarFactura`
 
+Nota: `POST /invoice` es **solo creación**. Si intentas enviar el mismo `numeroFactura` de nuevo para “cambiar estado”, fallará con `409` por restricción `UNIQUE`.
+
 #### cURL (importable en Postman) - POST /invoice
 
 Requiere token con rol `Administrador`.
@@ -169,6 +171,26 @@ Si no existe:
 ```bash
 curl -X GET "http://localhost:5109/invoice/1" \
   -H "Authorization: Bearer $TOKEN"
+```
+
+### 2.1) Actualizar estado de una factura
+
+- `PATCH /invoice/{id}/status`
+- Requiere rol: `Administrador`
+
+Persistencia:
+
+- Stored Procedure: `dbo.SP_ActualizarEstadoFactura`
+
+#### cURL (importable en Postman) - PATCH /invoice/{id}/status
+
+```bash
+curl -X PATCH "http://localhost:5109/invoice/1/status" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "estado": "Pagada"
+  }'
 ```
 
 ### 3) Buscar facturas por cliente

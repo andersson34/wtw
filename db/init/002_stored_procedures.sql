@@ -91,3 +91,23 @@ BEGIN
     ORDER BY FechaEmision DESC;
 END
 GO
+
+CREATE OR ALTER PROCEDURE dbo.SP_ActualizarEstadoFactura
+    @Id INT,
+    @Estado VARCHAR(20)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE dbo.Facturas
+    SET Estado = @Estado
+    WHERE Id = @Id;
+
+    IF @@ROWCOUNT = 0
+    BEGIN
+        RETURN 1;
+    END
+
+    RETURN 0;
+END
+GO

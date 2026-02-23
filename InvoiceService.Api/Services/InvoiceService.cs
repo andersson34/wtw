@@ -41,4 +41,21 @@ public sealed class InvoiceService : IInvoiceService
         var invoices = await _repo.SearchByClientAsync(clientName, ct);
         return invoices.Select(i => _mapper.Map<InvoiceResponseDto>(i)).ToList();
     }
+
+    public async Task<InvoiceResponseDto> UpdateStatusAsync(int id, string estado, CancellationToken ct)
+    {
+        var updated = await _repo.UpdateStatusAsync(id, estado, ct);
+        if (!updated)
+        {
+            throw new ApiHttpException(StatusCodes.Status404NotFound, $"Factura con id {id} no encontrada.");
+        }
+
+        var invoice = await _repo.GetByIdAsync(id, ct);
+        if (invoice is null)
+        {
+            throw new ApiHttpException(StatusCodes.Status404NotFound, $"Factura con id {id} no encontrada.");
+        }
+
+        return _mapper.Map<InvoiceResponseDto>(invoice);
+    }
 }

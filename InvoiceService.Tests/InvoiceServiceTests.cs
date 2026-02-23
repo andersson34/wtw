@@ -133,4 +133,59 @@ public sealed class InvoiceServiceTests
         repo.Verify(r => r.SearchByClientAsync("Cliente", It.IsAny<CancellationToken>()), Times.Once);
         repo.VerifyNoOtherCalls();
     }
+
+    [Fact]
+    public async Task UpdateStatusAsync_WhenInvoiceExists_ShouldReturnUpdatedInvoice()
+    {
+        var repo = new Mock<IInvoiceRepository>(MockBehavior.Strict);
+        var mapper = CreateMapper();
+        var service = new InvoiceService.Api.Services.InvoiceService(repo.Object, mapper);
+
+        repo.Setup(r => r.UpdateStatusAsync(1, "Pagada", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
+
+        repo.Setup(r => r.GetByIdAsync(1, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Invoice
+            {
+                Id = 1,
+                NumeroFactura = "F-2026-0001",
+                ClienteNombre = "Juan Perez",
+                ClienteEmail = "juan.perez@example.com",
+                FechaEmision = new DateTime(2026, 2, 23),
+                FechaVencimiento = new DateTime(2026, 3, 5),
+                Subtotal = 100m,
+                Impuesto = 19m,
+                Total = 119m,
+                Estado = "Pagada",
+                CreadoEn = new DateTime(2026, 2, 23)
+            });
+
+        var result = await service.UpdateStatusAsync(1, "Pagada", CancellationToken.None);
+
+        result.Id.Should().Be(1);
+        result.Estado.Should().Be("Pagada");
+
+        repo.Verify(r => r.UpdateStatusAsync(1, "Pagada", It.IsAny<CancellationToken>()), Times.Once);
+        repo.Verify(r => r.GetByIdAsync(1, It.IsAny<CancellationToken>()), Times.Once);
+        repo.VerifyNoOtherCalls();
+    }
+
+    [Fact]
+    public async Task UpdateStatusAsync_WhenInvoiceDoesNotExist_ShouldThrow404()
+    {
+        var repo = new Mock<IInvoiceRepository>(MockBehavior.Strict);
+        var mapper = CreateMapper();
+        var service = new InvoiceService.Api.Services.InvoiceService(repo.Object, mapper);
+
+        repo.Setup(r => r.UpdateStatusAsync(999, "Pagada", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
+
+        var act = async () => await service.UpdateStatusAsync(999, "Pagada", CancellationToken.None);
+
+        var ex = await act.Should().ThrowAsync<ApiHttpException>();
+        ex.Which.StatusCode.Should().Be(404);
+
+        repo.Verify(r => r.UpdateStatusAsync(999, "Pagada", It.IsAny<CancellationToken>()), Times.Once);
+        repo.VerifyNoOtherCalls();
+    }
 }

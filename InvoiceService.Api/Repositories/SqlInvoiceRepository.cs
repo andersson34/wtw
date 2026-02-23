@@ -97,6 +97,32 @@ public sealed class SqlInvoiceRepository : IInvoiceRepository
         return result;
     }
 
+    public async Task<bool> UpdateStatusAsync(int id, string estado, CancellationToken ct)
+    {
+        await using var connection = new SqlConnection(_connectionString);
+        await using var cmd = new SqlCommand("SP_ActualizarEstadoFactura", connection)
+        {
+            CommandType = CommandType.StoredProcedure
+        };
+
+        cmd.Parameters.AddWithValue("@Id", id);
+        cmd.Parameters.AddWithValue("@Estado", estado);
+
+        await connection.OpenAsync(ct);
+
+        var returnValue = new SqlParameter
+        {
+            ParameterName = "@ReturnValue",
+            Direction = ParameterDirection.ReturnValue
+        };
+        cmd.Parameters.Add(returnValue);
+
+        await cmd.ExecuteNonQueryAsync(ct);
+
+        var code = (int)(returnValue.Value ?? 1);
+        return code == 0;
+    }
+
     private static Invoice MapInvoice(SqlDataReader reader)
     {
         return new Invoice

@@ -202,6 +202,64 @@ public sealed class SwaggerExamplesOperationFilter : IOperationFilter
 
             return;
         }
+
+        if (method.Equals("PATCH", StringComparison.OrdinalIgnoreCase) && path.StartsWith("/invoice/{id}", StringComparison.OrdinalIgnoreCase) && path.EndsWith("/status", StringComparison.OrdinalIgnoreCase))
+        {
+            SetRequestExample(operation, new OpenApiObject
+            {
+                ["estado"] = new OpenApiString("Pagada")
+            });
+
+            SetResponseExample(operation, "200", new OpenApiObject
+            {
+                ["success"] = new OpenApiBoolean(true),
+                ["data"] = new OpenApiObject
+                {
+                    ["id"] = new OpenApiInteger(1),
+                    ["numeroFactura"] = new OpenApiString("F-2026-0001"),
+                    ["clienteNombre"] = new OpenApiString("Juan Perez"),
+                    ["clienteEmail"] = new OpenApiString("juan.perez@example.com"),
+                    ["fechaEmision"] = new OpenApiString("2026-02-23T10:00:00"),
+                    ["fechaVencimiento"] = new OpenApiString("2026-03-05T10:00:00"),
+                    ["subtotal"] = new OpenApiDouble(100.00),
+                    ["impuesto"] = new OpenApiDouble(19.00),
+                    ["total"] = new OpenApiDouble(119.00),
+                    ["estado"] = new OpenApiString("Pagada"),
+                    ["creadoEn"] = new OpenApiString("2026-02-23T10:01:00Z")
+                },
+                ["message"] = new OpenApiString("Estado actualizado."),
+                ["errors"] = new OpenApiArray()
+            });
+
+            SetResponseExample(operation, "404", new OpenApiObject
+            {
+                ["success"] = new OpenApiBoolean(false),
+                ["data"] = new OpenApiNull(),
+                ["message"] = new OpenApiString("Factura con id 999 no encontrada."),
+                ["errors"] = new OpenApiArray()
+            });
+
+            SetResponseExample(operation, "400", new OpenApiObject
+            {
+                ["success"] = new OpenApiBoolean(false),
+                ["data"] = new OpenApiNull(),
+                ["message"] = new OpenApiString("Datos inválidos."),
+                ["errors"] = new OpenApiArray
+                {
+                    new OpenApiString("Estado es obligatorio")
+                }
+            });
+
+            SetResponseExample(operation, "403", new OpenApiObject
+            {
+                ["success"] = new OpenApiBoolean(false),
+                ["data"] = new OpenApiNull(),
+                ["message"] = new OpenApiString("Prohibido."),
+                ["errors"] = new OpenApiArray()
+            });
+
+            return;
+        }
     }
 
     private static void SetRequestExample(OpenApiOperation operation, IOpenApiAny example)

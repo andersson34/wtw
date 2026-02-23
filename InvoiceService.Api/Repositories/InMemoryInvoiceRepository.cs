@@ -39,4 +39,16 @@ public sealed class InMemoryInvoiceRepository : IInvoiceRepository
 
         return Task.FromResult<IReadOnlyList<Invoice>>(result);
     }
+
+    public Task<bool> UpdateStatusAsync(int id, string estado, CancellationToken ct)
+    {
+        if (!_storage.TryGetValue(id, out var invoice))
+        {
+            return Task.FromResult(false);
+        }
+
+        invoice.Estado = estado;
+        _storage[id] = invoice;
+        return Task.FromResult(true);
+    }
 }

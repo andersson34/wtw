@@ -53,4 +53,15 @@ public sealed class InvoiceController : ControllerBase
         var invoices = await _service.SearchByClientAsync(clientName, ct);
         return Ok(ApiResponse<IReadOnlyList<InvoiceResponseDto>>.Ok(invoices, "Búsqueda completada."));
     }
+
+    [HttpPatch("{id:int}/status")]
+    [Authorize(Roles = Roles.Administrador)]
+    [ProducesResponseType(typeof(ApiResponse<InvoiceResponseDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<object?>), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse<InvoiceResponseDto>>> UpdateStatus([FromRoute] int id, [FromBody] InvoiceUpdateStatusDto dto, CancellationToken ct)
+    {
+        var updated = await _service.UpdateStatusAsync(id, dto.Estado, ct);
+        return Ok(ApiResponse<InvoiceResponseDto>.Ok(updated, "Estado actualizado."));
+    }
 }
